@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: SelfHostedPool  # Use the pool name where the self-hosted agent is registered
+
+variables:
+  containerRegistry: 'farhanvotingappacr.azurecr.io'
+  imageName: 'voting-app/vote'
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'farhanvotingappacr'
+    repository: '$(containerRegistry)/$(imageName)'
+    command: 'buildAndPush'
+    Dockerfile: 'worker*/Dockerfile'
+    tags: '$(Build.BuildId)'
+- task: Docker@2
+  inputs:
+    repository: '$(containerRegistry)/$(imageName)'
+    command: 'buildAndPush'
+    Dockerfile: 'vote/Dockerfile'
+    tags: '$(Build.BuildId)'
