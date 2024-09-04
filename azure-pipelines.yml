@@ -1,0 +1,20 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  containerRegistry: 'farhanvotingappacr.azurecr.io'
+  imageName: 'voting-app/vote'
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'farhanvotingappacr'
+    repository: '$(containerRegistry)/$(imageName)'
+    command: 'buildAndPush'
+    Dockerfile: 'vote/Dockerfile'
+    tags: '$(Build.BuildId)'
